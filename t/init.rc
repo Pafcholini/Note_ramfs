@@ -1333,6 +1333,7 @@ on property:selinux.reload_policy=1
 # SEC_SELINUX to support spota
 on property:selinux.sec.restorecon=1
     restorecon_recursive /data/security/spota
+    restorecon_recursive /data/security/aasa
 
 service console /system/bin/sh
     class core
