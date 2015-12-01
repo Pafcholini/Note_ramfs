@@ -34,13 +34,9 @@ on early-init
 
 on init
     ffu
-
-setprop ro.boot.selinux 0
-setenforce 0
-
 sysclktz 0
 
-loglevel 0
+loglevel 3
 
 # for audit message
     chown system system /proc/avc_msg
@@ -1337,6 +1333,7 @@ on property:selinux.reload_policy=1
 # SEC_SELINUX to support spota
 on property:selinux.sec.restorecon=1
     restorecon_recursive /data/security/spota
+    restorecon_recursive /data/security/aasa
 
 service console /system/bin/sh
     class core
@@ -1415,15 +1412,6 @@ service cs_service /system/bin/cs
     user system
     group system
     disabled
-
-service bm-post-su /sbin/bm-post-su.sh
-     class late_start
-     user root
-     disabled
-     oneshot
- 
-on property:sys.boot_completed=1
-    start bm-post-su
 
 on property:sys.qseecomd.enable=true
     start cs_service
@@ -1524,12 +1512,6 @@ service drm /system/bin/drmserver
 # org
 #    group drm system inet drmrpc
 # ]
-
-service sysinit /system/xbin/busybox run-parts /system/etc/init.d
-     class late_start
-     user root
-     group shell
-     oneshot
 
 service media /system/bin/mediaserver
     class main

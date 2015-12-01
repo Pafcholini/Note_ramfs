@@ -452,6 +452,7 @@
 /system/bin/usf_pairing                         u:object_r:usf_exec:s0
 /system/bin/usf_tester                          u:object_r:usf_exec:s0
 /system/bin/mcStarter                           u:object_r:mcStarter_exec:s0
+/system/bin/tbaseLoader                         u:object_r:tbaseLoader_exec:s0
 
 ###################################
 # sysfs files
@@ -671,6 +672,7 @@
 /dev/socket/rild[0-9]*	u:object_r:rild_socket:s0
 /dev/socket/rild-debug[0-9]* u:object_r:rild_debug_socket:s0
 /dev/socket/ss_conn_daemon      u:object_r:ss_conn_daemon_socket:s0
+/dev/socket/taa                  u:object_r:tz_socket:s0
 /dev/socket/tz                  u:object_r:tz_socket:s0
 /dev/socket/uibc(/.*)?          u:object_r:uibc_socket:s0
 /dev/socket/vpnclientd          u:object_r:vpnclientd_socket:s0
