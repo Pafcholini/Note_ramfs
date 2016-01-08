@@ -12,10 +12,11 @@ dalvik.vm.dex2oat-Xms=64m
 dalvik.vm.dex2oat-Xmx=512m
 ro.dalvik.vm.native.bridge=0
 debug.atrace.tags.enableflags=0
+sys.keymaster.loaded=true
 #
 # BOOTIMAGE_BUILD_PROPERTIES
 #
-ro.bootimage.build.date=Mon Dec 14 10:05:19 CET 2015
-ro.bootimage.build.date.utc=1450083919
-ro.bootimage.build.fingerprint=samsung/cm_trltexx/trltexx:6.0.1/MMB29M/c7303b8c01:userdebug/test-keys
+ro.bootimage.build.date=Thu Jan 7 12:27:39 CET 2016
+ro.bootimage.build.date.utc=1452166059
+ro.bootimage.build.fingerprint=samsung/cm_trltexx/trltexx:6.0.1/MMB29T/e2272a7efc:userdebug/test-keys
 persist.sys.usb.config=none

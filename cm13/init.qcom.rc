@@ -29,6 +29,8 @@ import init.qcom.usb.rc
 
 on early-init
     setprop sys.boot_completed 0
+    export LD_SHIM_LIBS /system/lib/libril.so|libril_shim.so:rmt_storage|librmt_shim.so
+
     mount debugfs debugfs /sys/kernel/debug
     write /sys/block/mmcblk0/queue/scheduler noop
 
@@ -37,7 +39,6 @@ on early-init
     symlink /data/tombstones /tombstones
 
 on init
-    export LD_PRELOAD "/system/lib/libsamsung_symbols.so"
     mkdir /efs 0771 system radio
 
     # Set permissions for persist partition
@@ -393,6 +394,17 @@ on early-boot
     write /sys/kernel/boot_adsp/boot 1
 
 on boot
+    # Ensure all CPUs are online (big cluster)
+    write /sys/devices/system/cpu/cpu1/online 1
+    write /sys/devices/system/cpu/cpu2/online 1
+    write /sys/devices/system/cpu/cpu3/online 1
+
+    # Update foreground cpusets now that processors are up
+    write /dev/cpuset/foreground/cpus 0-3
+    write /dev/cpuset/foreground/boost/cpus 0-3
+    write /dev/cpuset/background/cpus 0
+    write /dev/cpuset/system-background/cpus 0-1
+
     mount debugfs /sys/kernel/debug /sys/kernel/debug
 
     chown bluetooth bluetooth /sys/module/bluetooth_power/parameters/power
@@ -1241,10 +1253,14 @@ service qcamerasvr /system/bin/mm-qcamera-daemon
     user camera
     group camera system inet input graphics radio sdcard_rw sdcard_r media_rw shell log
 
-service gsiff_daemon /system/bin/gsiff_daemon
-    class late_start
-    user system
-    group gps qcom_oncrpc net_raw
+# there seems to be a large philosophical discussion about this daemon.  The consensus seems to
+# be to not enable it http://forum.xda-developers.com/showthread.php?t=1755180 but it's here
+# and selinux can handle it if anyone wants to add it back --fattire
+
+#service gsiff_daemon /system/bin/gsiff_daemon
+#    class late_start
+#    user system
+#    group gps qcom_oncrpc
 
 service qseecomd /system/bin/qseecomd
     class core
@@ -1256,6 +1272,8 @@ service mpdecision /system/bin/mpdecision --avg_comp
     user root
     group system
     disabled
+    # cpusets NO YET -- writepid /dev/cpuset/system-background/tasks
+
 
 #service thermal-engine /system/bin/thermal-engine
 #    class main
@@ -1300,7 +1318,7 @@ on property:init.svc.ril-daemon=running
     setprop ro.mdm_helper_proxy_req true
 
 on property:ro.baseband=mdm
-	start mdm_helper
+    start mdm_helper
 
 on property:ro.baseband=mdm2
     insmod /system/lib/modules/mhi.ko
@@ -1396,8 +1414,6 @@ service dhcpcd_bnep4 /system/bin/dhcpcd -BKLG
     oneshot
 
 on property:init.svc.macloader=stopped
-    chown system root /data/.cid.info
-    chmod 0664 /data/.cid.info
     chown system root /data/.rev
     chmod 0664 /data/.rev
 # end of wifi
@@ -1638,4 +1654,3 @@ on charger
     write /sys/module/msm_pm/modes/cpu0/standalone_power_collapse/suspend_enabled 1
     write /sys/module/msm_pm/modes/cpu0/standalone_power_collapse/idle_enabled 1
     write /sys/module/msm_pm/modes/cpu0/retention/idle_enabled 1
-
