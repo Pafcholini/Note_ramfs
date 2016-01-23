@@ -327,6 +327,7 @@
 /dev/hsicctl.*                                  u:object_r:hsic_device:s0
 /dev/kgsl-3d0                                   u:object_r:gpu_device:s0
 /dev/mhi_pipe_.*                                u:object_r:mhi_device:s0
+/dev/bhi                                        u:object_r:bhi_device:s0
 /dev/msm_.*                                     u:object_r:audio_device:s0
 /dev/usf1                                       u:object_r:usf_device:s0
 /dev/msm_dsps                                   u:object_r:sensors_device:s0
@@ -804,6 +805,9 @@
 #/efs/prox_cal							u:object_r:sensors_efs_file:s0
 /efs/wifi/.mac.info						u:object_r:wifi_efs_file:s0
 
+/data/data/com.android.settings					u:object_r:system_app_data_file:s0
+/data/data/data_usage_rx                                 	u:object_r:radio_data_file:s0
+/data/data/data_usage_tx                                 	u:object_r:radio_data_file:s0
 #line 1 "vendor/cm/sepolicy/file_contexts"
 /cache/dalvik-cache(/.*)? u:object_r:dalvikcache_data_file:s0
 

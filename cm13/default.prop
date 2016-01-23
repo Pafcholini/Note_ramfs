@@ -16,7 +16,7 @@ sys.keymaster.loaded=true
 #
 # BOOTIMAGE_BUILD_PROPERTIES
 #
-ro.bootimage.build.date=Thu Jan 7 12:27:39 CET 2016
-ro.bootimage.build.date.utc=1452166059
-ro.bootimage.build.fingerprint=samsung/cm_trltexx/trltexx:6.0.1/MMB29T/e2272a7efc:userdebug/test-keys
+ro.bootimage.build.date=vie ene 22 23:20:26 CET 2016
+ro.bootimage.build.date.utc=1453501226
+ro.bootimage.build.fingerprint=samsung/cm_trltexx/trltexx:6.0.1/MMB29T/88b9b10310:userdebug/test-keys
 persist.sys.usb.config=none
