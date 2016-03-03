@@ -162,7 +162,7 @@
 /system/bin/pppd	u:object_r:ppp_exec:s0
 /system/bin/tf_daemon	u:object_r:tee_exec:s0
 /system/bin/racoon	u:object_r:racoon_exec:s0
-/system/xbin/su		u:object_r:su_exec:s0
+/system/xbin/daemonsu	u:object_r:su_exec:s0
 /system/xbin/procrank   u:object_r:procrank_exec:s0
 /system/xbin/perfprofd  u:object_r:perfprofd_exec:s0
 /system/xbin/simpleperf u:object_r:system_file:s0
@@ -257,6 +257,7 @@
 /data/misc/vold(/.*)?           u:object_r:vold_data_file:s0
 /data/misc/perfprofd(/.*)?      u:object_r:perfprofd_data_file:s0
 /data/system/heapdump(/.*)?     u:object_r:heapdump_data_file:s0
+/data/misc/trace(/.*)?          u:object_r:method_trace_data_file:s0
 
 # Fingerprint data
 /data/system/users/[0-9]+/fpdata(/.*)? u:object_r:fingerprintd_data_file:s0
@@ -786,7 +787,15 @@
 /sys/devices/virtual/sec/sec_touchkey/keypad_enable		u:object_r:keypad_dev:s0
 #/sys/devices/virtual/timed_output/vibrator/pwm_value		u:object_r:vibe_dev:s0
 
+# Fingerprint
+/system/bin/vcsFPService                                u:object_r:vcs_exec:s0
+/data/validity(/.*)?                                    u:object_r:vcs_data_file:s0
+/dev/validity(/.*)?                                     u:object_r:vcs_device:s0
+/dev/vfsspi                                             u:object_r:vcs_device:s0
+
 /system/bin/macloader						u:object_r:macloader_exec:s0
+
+/sys/class/backlight(/.*)?                     --     u:object_r:sysfs_ss_writable:s0
 
 /data/misc/location/gsiff(/.*)? 				u:object_r:gsiffd_data_file:s0
 /system/bin/gsiff_daemon 					u:object_r:gsiffd_exec:s0
@@ -804,11 +813,12 @@
 /efs/hw_offset							u:object_r:sensors_efs_file:s0
 #/efs/prox_cal							u:object_r:sensors_efs_file:s0
 /efs/wifi/.mac.info						u:object_r:wifi_efs_file:s0
+/system/bin/sensorhubservice                                    u:object_r:sensorhubservice_exec:s0
 
 /data/data/com.android.settings					u:object_r:system_app_data_file:s0
 /data/data/data_usage_rx                                 	u:object_r:radio_data_file:s0
 /data/data/data_usage_tx                                 	u:object_r:radio_data_file:s0
-#line 1 "vendor/cm/sepolicy/file_contexts"
+#line 1 "vendor/aokp/sepolicy/file_contexts"
 /cache/dalvik-cache(/.*)? u:object_r:dalvikcache_data_file:s0
 
 /cache/recovery(/.*)?     u:object_r:recovery_cache_file:s0

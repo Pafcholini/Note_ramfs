@@ -34,6 +34,7 @@
 /dev/kgsl-2d0             0666   root       root
 /dev/kgsl-2d1             0666   root       root
 /dev/ion                  0664   system     system
+/dev/lightsensor          0640   system     system
 /dev/rtc0                 0600   system     system
 /dev/smd0                 0660   system     system
 /dev/smd4                 0660   system     system
@@ -153,6 +154,10 @@
 /dev/tty_sdio_00          0660   system     system
 /dev/ttyGS0               0660   system     system
 /dev/i2c-5                0660   media       media
+/dev/voice_svc            0660   system     audio
+
+# Fingerprint
+/dev/vfsspi               0660   system     system
 
 # DVB devices
 /dev/dvb/adapter0/demux*  0440   media       media
