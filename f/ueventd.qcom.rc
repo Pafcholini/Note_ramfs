@@ -46,7 +46,7 @@
 /dev/smd11                0660   radio      radio
 
 #permissions for CIQ
-/dev/ciq_bridge           0660   system     system
+/dev/smd4_bridge          0660   system     system
 
 /dev/radio0               0640   system     system
 /dev/rfcomm0              0660   bluetooth  bluetooth
@@ -156,6 +156,7 @@
 /dev/ttyGS0               0660   system     system
 /dev/i2c-5                0660   media       media
 /dev/voice_svc            0660   system     audio
+/dev/avtimer              0660   system     audio
 
 # DVB devices
 /dev/dvb/adapter0/demux*  0440   media       media

@@ -33,7 +33,11 @@ on early-init
     mkdir /cpdump 0771 system system
     symlink /data/tombstones /tombstones
 
+#on post-fs
+#    export LD_PRELOAD libNimsWrap.so
+
 on fs
+    wait /dev/block/bootdevice
     mount_all fstab.qcom
 
     # Keeping following partitions outside fstab file. As user may not have
@@ -113,6 +117,9 @@ service qfipsverify /system/bin/qfipsverify
    group root
    oneshot
 
+on property:sys.boot_completed=1
+   write /proc/iccc_ready 1
+
 service qseecomd /system/bin/qseecomd
    class core
    user root
@@ -123,7 +130,7 @@ service mpdecision /system/bin/mpdecision --avg_comp
    user root
    disabled
 
-service thermal-engine /system/bin/thermal-engine
+service thermal-engine /system/vendor/bin/thermal-engine
    class main
    user root
    socket thermal-send-client stream 0666 system system
@@ -195,7 +202,7 @@ service usf-post-boot /system/bin/sh /system/etc/usf_post_boot.sh
     disabled
     oneshot
 
-service mcStarter /system/bin/mcStarter tbase300
+service tbaseLoader /system/bin/tbaseLoader tbase300
     class core
     user root
     group root
@@ -209,7 +216,7 @@ service run-mobicore /system/bin/mcDriverDaemon
     disabled
 
 on property:sys.qseecomd.enable=true
-    start mcStarter
+    start tbaseLoader
 
 on property:sys.mobicore.loaded=true
     start run-mobicore
@@ -310,7 +317,7 @@ service ims_rtp_daemon /system/bin/ims_rtp_daemon
    class main
    user system
    socket ims_rtpd stream 0660 system radio
-   group radio net_raw diag qcom_diag log
+   group radio net_raw diag qcom_diag log inet
    disabled
 
 on property:sys.ims.DATA_DAEMON_STATUS=1

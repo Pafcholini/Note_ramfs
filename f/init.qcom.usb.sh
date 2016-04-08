@@ -28,7 +28,7 @@
 #
 #
 chown -h root.system /sys/devices/platform/msm_hsusb/gadget/wakeup
-chmod -h 220 /sys/devices/platform/msm_hsusb/gadget/wakeup
+chmod 220 /sys/devices/platform/msm_hsusb/gadget/wakeup
 
 #
 # Allow persistent usb charging disabling
@@ -121,7 +121,7 @@ case "$usb_config" in
               setprop persist.rmnet.mux enabled
           ;;
           "HSIC+PCIe")
-              setprop persist.sys.usb.config diag,diag_mdm,serial_hsic,rmnet_qti_ether,mass_storage,adb
+              #setprop persist.sys.usb.config diag,diag_mdm,serial_hsic,rmnet_qti_ether,mass_storage,adb
           ;;
           "PCIe")
               setprop persist.sys.usb.config diag,diag_mdm,serial_tty,rmnet_qti_ether,mass_storage,adb
@@ -149,7 +149,7 @@ case "$usb_config" in
               ;;
           esac
              # setprop persist.sys.usb.config diag,serial_smd,serial_tty,rmnet_bam,mass_storage,adb
-	       setprop persist.sys.usb.config mtp,adb
+	       #setprop persist.sys.usb.config mtp,adb
           ;;
       esac
     ;;
