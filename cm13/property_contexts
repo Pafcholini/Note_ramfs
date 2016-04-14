@@ -120,7 +120,7 @@ sys.audio.init             u:object_r:audio_prop:s0
 alarm_boot                 u:object_r:alarm_boot_prop:s0
 debug.sf.nobootanimation   u:object_r:boot_animation_prop:s0
 radio.noril                u:object_r:radio_noril_prop:s0
-#line 1 "vendor/aokp/sepolicy/property_contexts"
+#line 1 "vendor/emotion/sepolicy/property_contexts"
 adb.network.port              u:object_r:adbtcp_prop:s0
 recovery.perf.mode            u:object_r:recovery_prop:s0
 adb.secure                    u:object_r:recovery_prop:s0

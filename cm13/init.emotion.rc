@@ -1,0 +1,217 @@
+# EMOTION Extras
+import /init.superuser.rc
+
+on init
+    export ANDROID_CACHE /cache
+    export TERMINFO /system/etc/terminfo
+
+    # Set up the BFQIO hierarchy
+    chmod 0755 /sys/fs/cgroup
+    mkdir /sys/fs/cgroup/bfqio 0755 root system
+    mount cgroup none /sys/fs/cgroup/bfqio bfqio
+    chown root system /sys/fs/cgroup/bfqio/tasks
+    chmod 0664 /sys/fs/cgroup/bfqio/tasks
+    chmod 0220 /sys/fs/cgroup/bfqio/cgroup.event_control
+
+    # Soft realtime class for display service
+    mkdir /sys/fs/cgroup/bfqio/rt-display 0755 root system
+    write /sys/fs/cgroup/bfqio/rt-display/bfqio.ioprio_class 1
+    write /sys/fs/cgroup/bfqio/rt-display/bfqio.ioprio 7
+    chown system system /sys/fs/cgroup/bfqio/rt-display/tasks
+    chmod 0664 /sys/fs/cgroup/bfqio/rt-display/tasks
+    chmod 0220 /sys/fs/cgroup/bfqio/rt-display/cgroup.event_control
+
+on post-fs-data
+    mkdir /data/ssh 0750 root shell
+    mkdir /data/ssh/empty 0600 root shell
+    mkdir /cache/recovery 0770 system cache
+
+    # Run sysinit
+    start sysinit
+
+on boot
+# Set GPU default values on boot
+    write /sys/devices/fdb00000.qcom,kgsl-3d0/kgsl/kgsl-3d0/max_gpuclk 600000000
+
+    # interactive governor
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/timer_rate
+    chmod 0664 /sys/devices/system/cpu/cpufreq/interactive/timer_rate
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/timer_slack
+    chmod 0664 /sys/devices/system/cpu/cpufreq/interactive/timer_slack
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/min_sample_time
+    chmod 0664 /sys/devices/system/cpu/cpufreq/interactive/min_sample_time
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq
+    chmod 0664 /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/target_loads
+    chmod 0664 /sys/devices/system/cpu/cpufreq/interactive/target_loads
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load
+    chmod 0664 /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay
+    chmod 0664 /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/boost
+    chmod 0664 /sys/devices/system/cpu/cpufreq/interactive/boost
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/boostpulse
+    chmod 0664 /sys/devices/system/cpu/cpufreq/interactive/boostpulse
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/input_boost
+    chmod 0664 /sys/devices/system/cpu/cpufreq/interactive/input_boost
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/boostpulse_duration
+    chmod 0664 /sys/devices/system/cpu/cpufreq/interactive/boostpulse_duration
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/io_is_busy
+    chmod 0664 /sys/devices/system/cpu/cpufreq/interactive/io_is_busy
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/sync_freq
+    chmod 0664 /sys/devices/system/cpu/cpufreq/interactive/sync_freq
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/up_threshold_any_cpu_freq
+    chmod 0664 /sys/devices/system/cpu/cpufreq/interactive/up_threshold_any_cpu_freq
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/up_threshold_any_cpu_load
+    chmod 0664 /sys/devices/system/cpu/cpufreq/interactive/up_threshold_any_cpu_load
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/sampling_down_factor
+    chmod 0664 /sys/devices/system/cpu/cpufreq/interactive/sampling_down_factor
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/max_freq_hysteresis
+    chmod 0664 /sys/devices/system/cpu/cpufreq/interactive/max_freq_hysteresis
+
+    # ondemand governor
+    chown system system /sys/devices/system/cpu/cpufreq/ondemand/boostfreq
+    chmod 0664 /sys/devices/system/cpu/cpufreq/ondemand/boostfreq
+    chown system system /sys/devices/system/cpu/cpufreq/ondemand/boostpulse
+    chmod 0664 /sys/devices/system/cpu/cpufreq/ondemand/boostpulse
+    chown system system /sys/devices/system/cpu/cpufreq/ondemand/boosttime
+    chmod 0664 /sys/devices/system/cpu/cpufreq/ondemand/boosttime
+    chown system system /sys/devices/system/cpu/cpufreq/ondemand/io_is_busy
+    chmod 0664 /sys/devices/system/cpu/cpufreq/ondemand/io_is_busy
+    chown system system /sys/devices/system/cpu/cpufreq/ondemand/down_differential
+    chmod 0664 /sys/devices/system/cpu/cpufreq/ondemand/down_differential
+    chown system system /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate
+    chmod 0664 /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate
+    chown system system /sys/devices/system/cpu/cpufreq/ondemand/powersave_bias
+    chmod 0664 /sys/devices/system/cpu/cpufreq/ondemand/powersave_bias
+    chown system system /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor
+    chmod 0664 /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor
+    chown system system /sys/devices/system/cpu/cpufreq/ondemand/up_threshold
+    chmod 0664 /sys/devices/system/cpu/cpufreq/ondemand/up_threshold
+    chown system system /sys/devices/system/cpu/cpufreq/ondemand/input_boost
+    chmod 0664 /sys/devices/system/cpu/cpufreq/ondemand/input_boost
+    chown system system /sys/devices/system/cpu/cpufreq/ondemand/up_threshold_multi_core
+    chmod 0664 /sys/devices/system/cpu/cpufreq/ondemand/up_threshold_multi_core
+    chown system system /sys/devices/system/cpu/cpufreq/ondemand/down_differential_multi_core
+    chmod 0664 /sys/devices/system/cpu/cpufreq/ondemand/down_differential_multi_core
+    chown system system /sys/devices/system/cpu/cpufreq/ondemand/optimal_freq
+    chmod 0664 /sys/devices/system/cpu/cpufreq/ondemand/optimal_freq
+    chown system system /sys/devices/system/cpu/cpufreq/ondemand/sync_freq
+    chmod 0664 /sys/devices/system/cpu/cpufreq/ondemand/sync_freq
+    chown system system /sys/devices/system/cpu/cpufreq/ondemand/up_threshold_any_cpu_load
+    chmod 0664 /sys/devices/system/cpu/cpufreq/ondemand/up_threshold_any_cpu_load
+
+    chown system system /sys/block/mmcblk0/queue/scheduler
+    chmod 0664 /sys/block/mmcblk0/queue/scheduler
+    restorecon /sys/block/mmcblk0/queue/scheduler
+
+    chown system system /dev/cpuctl/cpu.notify_on_migrate
+    chmod 0664 /dev/cpuctl/cpu.notify_on_migrate
+
+    # LiveDisplay sysfs
+    chown system system /sys/devices/virtual/graphics/fb0/aco
+    chmod 0660 /sys/devices/virtual/graphics/fb0/aco
+    chown system system /sys/devices/virtual/graphics/fb0/cabc
+    chmod 0660 /sys/devices/virtual/graphics/fb0/cabc
+    chown system system /sys/devices/virtual/graphics/fb0/rgb
+    chmod 0660 /sys/devices/virtual/graphics/fb0/rgb
+    chown system system /sys/devices/virtual/graphics/fb0/sre
+    chmod 0660 /sys/devices/virtual/graphics/fb0/sre
+
+    # Define TCP delayed ack settings for WiFi & LTE
+    chown system system /sys/kernel/ipv4/tcp_delack_seg
+    chown system system /sys/kernel/ipv4/tcp_use_userconfig
+    setprop net.tcp.delack.default     1
+    setprop net.tcp.delack.wifi        20
+    setprop net.tcp.delack.lte         8
+    setprop net.tcp.usercfg.default    0
+    setprop net.tcp.usercfg.wifi       1
+    setprop net.tcp.usercfg.lte        1
+
+    # Persistent properties (only created if persist exists)
+    mkdir /persist/properties 0770 system system
+
+# sysinit (/system/etc/init.d)
+service sysinit /system/bin/sysinit
+    user root
+    oneshot
+    disabled
+
+# adb over network
+on property:adb.network.port=*
+    setprop service.adb.tcp.port ${adb.network.port}
+
+on property:service.adb.tcp.port=5555
+    stop adbd
+    start adbd
+
+on property:service.adb.tcp.port=-1
+    stop adbd
+    start adbd
+
+on property:persist.radio.noril=1
+    setprop ro.radio.noril 1
+
+# Configure IO scheduler
+on property:sys.io.scheduler=*
+    write /sys/block/mmcblk0/queue/scheduler ${sys.io.scheduler}
+
+on property:persist.sys.io.scheduler=*
+    setprop sys.io.scheduler ${persist.sys.io.scheduler}
+
+# Set slice_idle to 0 for CFQ
+on property:sys.io.scheduler=cfq
+    write /sys/block/mmcblk0/queue/iosched/slice_idle 0
+
+# Set slice_idle to 0 for BFQ
+on property:sys.io.scheduler=bfq
+    write /sys/block/mmcblk0/queue/iosched/slice_idle 0
+
+# init.d (/system/etc/init.d)
+service userinit /system/xbin/busybox run-parts /system/etc/init.d
+    oneshot
+    class late_start
+    user root
+    group root
+
+service supolicy /system/xbin/supolicy --live "allow shell dalvikcache_data_file:file { write create }" \
+    "allow shell dalvikcache_data_file:dir { add_name create relabelfrom relabelto remove_name rename reparent rmdir search setattr write }" \
+    "allow shell dalvikcache_data_file:file unlink" \
+    "allow mediaserver mediaserver_tmpfs:file execute" \
+    "allow isolated_app app_data_file:dir search" \
+    "allow init kernel:security read_policy" \
+    "allow init logd:dir { search }" \
+    "allow init logd:file { read open }" \
+    "allow zygote init:unix_stream_socket { read write }" \
+    "allow shell self:capability dac_override" \
+    "allow system_app sysfs:file write" \
+    "allow system_app dalvikcache_data_file:dir { write }" \
+    "allow system_app dalvikcache_data_file:file { write create }" \
+    "allow untrusted_app kernel:dir search" \
+    "allow untrusted_app kernel:file { ioctl read write getattr append open }" \
+    "allow untrusted_app self:udp_socket ioctl" \
+    "allow untrusted_app sysfs_mmi_touch:dir search" \
+    "allow untrusted_app sysfs_devices_system_kcal:dir search" \
+    "allow untrusted_app efs_file:dir { getattr }" \
+    "allow untrusted_app tombstone_data_file:dir { getattr }" \
+    "allow untrusted_app init:dir { getattr }" \
+    "allow untrusted_app init:file { read }" \
+    "allow untrusted_app proc_sysrq:file { getattr }" \
+    "allow untrusted_app ueventd:dir { getattr search }" \
+    "allow untrusted_app logd:dir { getattr }" \
+    "allow untrusted_app sysfs_devices_system_kcal:file { open setattr read write getattr }" \
+    "allow untrusted_app debugfs:file { read }" \
+    "allow untrusted_app battery_service:service_manager { find }" \
+    "allow untrusted_app vold:dir { getattr }" \
+    "allow untrusted_app healthd:dir { getattr }" \
+    "allow untrusted_app lmkd:dir { getattr }" \
+    "allow untrusted_app servicemanager:dir { getattr }" \
+    "allow untrusted_app surfaceflinger:dir { getattr }" \
+    "allow logd kernel:system { module_request }" \
+    "allow vold logd:dir { read }" \
+    "allow system_server logd:dir { search }"
+    disabled
+    oneshot
+
+on post-fs-data
+    start supolicy

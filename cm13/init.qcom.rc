@@ -87,12 +87,17 @@ on fs
     setprop qcom.audio.init complete
 
 on post-fs
-    # Increase max readahead size to 512 KB
-    write /sys/block/mmcblk0/queue/read_ahead_kb 512
+    # Increase max readahead size to 1024 KB
+    write /sys/block/mmcblk0/queue/read_ahead_kb 1024
+    write /sys/block/mmcblk1/queue/read_ahead_kb 1024
     # for controlling write performance boosting
     chown system radio /sys/block/mmcblk0/bkops_en
     chmod 0664 /sys/block/mmcblk0/bkops_en
 
+# GPU
+    write /sys/class/kgsl/kgsl-3d0/devfreq/min_freq 200000000
+    write /sys/class/kgsl/kgsl-3d0/max_gpuclk 600000000
+    
 # Mobicore
     export MC_AUTH_TOKEN_PATH /efs
 
@@ -394,6 +399,20 @@ on early-boot
     write /sys/kernel/boot_adsp/boot 1
 
 on boot
+
+    # Enable msm hotplug for boot
+    write /sys/module/msm_hotplug/msm_enabled 1
+    write /sys/module/msm_hotplug/cpu_boosted 2
+    write /sys/module/msm_hotplug/max_cpu_online 4
+    write /sys/module/msm_hotplug/min_cpu_online 2
+
+    # Enable intelli-thermal for boot
+    write /sys/module/msm_thermal/parameters/enabled 1
+    write /sys/module/msm_thermal/core_control/enabled 1
+    write /sys/module/msm_thermal/parameters/core_control_mask 12
+    write /sys/module/msm_thermal/parameters/freq_control_mask 15
+    write /sys/module/msm_thermal/parameters/limit_temp_degC 80
+    write /sys/module/msm_thermal/parameters/core_limit_temp_degC 85
 
     # CPU Sets
 
@@ -806,6 +825,8 @@ on boot
    chown system system /sys/devices/fe12f000.slim/es705-codec-gen0/keyword_grammar_path
    chown system system /sys/devices/fe12f000.slim/es705-codec-gen0/keyword_net_path
 
+# Fingerprint_sensor
+    chown system radio /sys/class/fingerprint/fingerprint/type_check
 # Accelerometer_sensor
     chown system radio /sys/class/sensors/accelerometer_sensor/raw_data
     chown system radio /sys/class/sensors/accelerometer_sensor/calibration
@@ -935,7 +956,7 @@ on boot
     chown system radio /sys/class/sensors/ssp_sensor/uncal_mag_poll_delay
     chown system radio /sys/class/sensors/ssp_sensor/ssp_flush
     chown system radio /sys/class/sensors/ssp_sensor/shake_cam
-    chmod 0600 /dev/batch_io
+    chmod 0660 /dev/batch_io
     chown system system /dev/batch_io
 # Gesture_sensor
     chown system radio /sys/class/sensors/gesture_sensor/vendor
@@ -1258,16 +1279,15 @@ service mpdecision /system/bin/mpdecision --avg_comp
     writepid /dev/cpuset/system-background/tasks
     disabled
 
+service sensorhubservice /system/bin/sensorhubservice
+    class main
+    user system
+    group input
 
 #service thermal-engine /system/bin/thermal-engine
 #    class main
 #    user root
 #    group radio system
-
-service sensorhubservice /system/bin/sensorhubservice
-    class main
-    user system
-    group input
 
 service time_daemon /system/bin/time_daemon
     class late_start
@@ -1307,7 +1327,7 @@ on property:init.svc.ril-daemon=running
     setprop ro.mdm_helper_proxy_req true
 
 on property:ro.baseband=mdm
-    start mdm_helper
+	start mdm_helper
 
 on property:ro.baseband=mdm2
     insmod /system/lib/modules/mhi.ko
@@ -1402,6 +1422,11 @@ service dhcpcd_bnep4 /system/bin/dhcpcd -BKLG
     disabled
     oneshot
 
+service loc_launcher /system/bin/loc_launcher
+    #loc_launcher will start as root and set its uid to gps
+    class late_start
+    group gps qcom_oncrpc inet net_raw qcom_diag net_admin wifi
+
 on property:init.svc.macloader=stopped
     chown system root /data/.rev
     chmod 0664 /data/.rev
@@ -1432,7 +1457,7 @@ service wifi-crda /system/bin/sh /system/etc/init.crda.sh
    oneshot
 
 on property:sys.boot_completed=1
-    write /sys/block/mmcblk0/queue/scheduler fiops
+    write /sys/block/mmcblk0/queue/scheduler cfq
 
     # Configure the hardware properly
     write /sys/module/lpm_levels/enable_low_power/l2 4
@@ -1466,13 +1491,8 @@ on property:sys.boot_completed=1
         echo "cpubw_hwmon" > $devfreq_gov
     done
 
-    write /sys/module/msm_thermal/core_control/enabled 1
-    write /sys/module/msm_thermal/parameters/enabled "Y"
-    write /sys/module/msm_thermal/parameters/limit_temp_degC 78
-
-    write /sys/module/cpu_boost/parameters/sync_threshold 1497600
-
     # Configure the cpu-boost module
+    write /sys/module/cpu_boost/parameters/sync_threshold 1497600
     write /sys/module/cpu_boost/parameters/boost_ms 10
     write /sys/module/cpu_boost/parameters/input_boost_freq 0
     write /sys/module/cpu_boost/parameters/input_boost_ms 40
@@ -1489,13 +1509,19 @@ on property:sys.boot_completed=1
     write /sys/devices/system/cpu/cpu3/cpufreq/scaling_min_freq 300000
 
     # Default interactive governor parameters
-    write /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay "20000 1400000:40000 1700000:20000"
-    write /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load 90
-    write /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq 1190400
-    write /sys/devices/system/cpu/cpufreq/interactive/target_loads "85 1500000:90 1800000:70"
-    write /sys/devices/system/cpu/cpufreq/interactive/min_sample_time 40000
-    write /sys/devices/system/cpu/cpufreq/interactive/sampling_down_factor 100000
+    write /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay 19000
+    write /sys/devices/system/cpu/cpufreq/interactive/boostpulse_duration 40000
+    write /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load 85
+    write /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq 1267200
+    write /sys/devices/system/cpu/cpufreq/interactive/input_boost_freq 1497600
     write /sys/devices/system/cpu/cpufreq/interactive/io_is_busy 1
+    write /sys/devices/system/cpu/cpufreq/interactive/min_sample_time 99000
+    write /sys/devices/system/cpu/cpufreq/interactive/sampling_down_factor 300000
+    write /sys/devices/system/cpu/cpufreq/interactive/target_loads "50 1400000:60"
+    write /sys/devices/system/cpu/cpufreq/interactive/timer_rate 20000
+    write /sys/devices/system/cpu/cpufreq/interactive/timer_slack 20000
+
+
 
     chown root system /sys/devices/system/cpu/mfreq
     chmod 220 /sys/devices/system/cpu/mfreq
@@ -1544,7 +1570,21 @@ on property:sys.boot_completed=1
     chown system radio /sys/class/sec/sec_epen/boost_level
 
     # Post boot services
-    start mpdecision
+    #start mpdecision
+
+    # Enable msm hotplug for boot
+    write /sys/module/msm_hotplug/msm_enabled 1
+    write /sys/module/msm_hotplug/cpu_boosted 2
+    write /sys/module/msm_hotplug/max_cpu_online 4
+    write /sys/module/msm_hotplug/min_cpu_online 2
+
+    # Enable intelli-thermal for boot
+    write /sys/module/msm_thermal/parameters/enabled 1
+    write /sys/module/msm_thermal/core_control/enabled 1
+    write /sys/module/msm_thermal/parameters/core_control_mask 12
+    write /sys/module/msm_thermal/parameters/freq_control_mask 15
+    write /sys/module/msm_thermal/parameters/limit_temp_degC 80
+    write /sys/module/msm_thermal/parameters/core_limit_temp_degC 85
 
 service hostapd /system/bin/hostapd -dddd /data/hostapd/hostapd.conf
     class late_start
@@ -1562,17 +1602,17 @@ service sec-sh /system/bin/sh /system/etc/init.sec.boot.sh
     user root
     oneshot
 
-# SENSOR FRAMEWORK : starts fingerprintService
-service vcsFPService /system/bin/vcsFPService
-    class late_start
-    user system
-    group system
-
 service hcidump /system/bin/sh /system/etc/hcidump.sh
     user bluetooth
     group bluetooth system net_bt_admin net_admin
     disabled
     oneshot
+
+# SENSOR FRAMEWORK : starts fingerprintService
+service vcsFPService /system/bin/vcsFPService
+    class late_start
+    user system
+    group system
 
 on property:persist.sys.ssr.restart_level=1
     write /sys/module/subsystem_restart/parameters/restart_level 1
@@ -1586,7 +1626,3 @@ on property:service.bootanim.exit=1
     write /proc/sys/net/ipv6/conf/rmnet_usb1/accept_ra 2
     write /proc/sys/net/ipv6/conf/rmnet_usb2/accept_ra 2
     write /proc/sys/net/ipv6/conf/rmnet_usb3/accept_ra 2
-
-    # Set default values on boot
-    write /sys/class/kgsl/kgsl-3d0/devfreq/min_freq 200000000
-    write /sys/class/kgsl/kgsl-3d0/max_gpuclk 600000000
