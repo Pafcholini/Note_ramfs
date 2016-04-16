@@ -4,10 +4,10 @@
 # This is a common source of Android security bugs.
 #
 
-# service should be overwritten for SPRINT's requirement
-# So, rilcarrier is imported after common rc, like init.rilchip.rc
-import /init.rilchip.rc
+# service can not be overwritten except SPRINT
+# Thus, rilcarrier is imported before common rc, like init.rilchip.rc
 import /init.rilcarrier.rc
+import /init.rilchip.rc
 import /init.rilepdg.rc
 
 on boot
@@ -34,6 +34,12 @@ service dhcpcd_eth0 /system/bin/dhcpcd -ABKL
     disabled
     oneshot
 
+# for SmartSwitch
+service dhcpcd_usb0 /system/bin/dhcpcd -ABKL
+    class main
+    disabled
+    oneshot
+    
 # for Wi-Fi only models
 on property:ro.radio.noril=yes
 stop ril-daemon
