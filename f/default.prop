@@ -24,6 +24,6 @@ persist.sys.usb.config=mtp
 #
 # BOOTIMAGE_BUILD_PROPERTIES
 #
-ro.bootimage.build.date=Tue Feb 23 23:32:24 KST 2016
-ro.bootimage.build.date.utc=1456237944
-ro.bootimage.build.fingerprint=samsung/trltedt/trlte:6.0.1/MMB29M/N910GDTU1DPB6:user/test-keys
+ro.bootimage.build.date=Tue May 3 18:56:07 KST 2016
+ro.bootimage.build.date.utc=1462269367
+ro.bootimage.build.fingerprint=samsung/trltexx/trlte:6.0.1/MMB29M/N910FXXU1DPE1:user/test-keys
