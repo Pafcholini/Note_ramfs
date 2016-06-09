@@ -318,6 +318,7 @@ spengestureservice                          u:object_r:system_service:s0
 storage                                     u:object_r:system_service:s0
 SecExternalDisplayService                   u:object_r:system_service:s0
 tima                                        u:object_r:system_service:s0
+pkm                                         u:object_r:system_service:s0
 transcloud                                  u:object_r:system_service:s0
 tw_toolbox                                  u:object_r:system_service:s0
 voip                                        u:object_r:system_service:s0
