@@ -274,7 +274,7 @@ on post-fs-data
     chown system radio /sys/class/mhl/test_v2
     chown system radio /sys/class/mhl/connection
 # on userdebug and eng builds, permision change mhl sysfs
-# on property:ro.debuggable=1
+on property:ro.debuggable=1
     chmod 0666 /sys/class/mhl/timing
     chmod 0666 /sys/class/mhl/swing_v2
     chmod 0666 /sys/class/mhl/reg_tuning
@@ -356,8 +356,6 @@ on post-fs-data
 
     # icd
     exec icd_check
-    chown system system /dev/icd
-    chmod 0644 /dev/icd
     write /dev/icdr 0
     chown system system /dev/icdr
     chmod 0644 /dev/icdr
@@ -404,26 +402,12 @@ on early-boot
 
 on boot
 
-    # Enable msm hotplug for boot
-    write /sys/module/msm_hotplug/msm_enabled 1
-    write /sys/module/msm_hotplug/cpu_boosted 2
-    write /sys/module/msm_hotplug/max_cpu_online 4
-    write /sys/module/msm_hotplug/min_cpu_online 2
-
-    # Enable intelli-thermal for boot
-    write /sys/module/msm_thermal/parameters/enabled 1
-    write /sys/module/msm_thermal/core_control/enabled 1
-    write /sys/module/msm_thermal/parameters/core_control_mask 12
-    write /sys/module/msm_thermal/parameters/freq_control_mask 15
-    write /sys/module/msm_thermal/parameters/limit_temp_degC 80
-    write /sys/module/msm_thermal/parameters/core_limit_temp_degC 85
-
     # CPU Sets
 
     write /dev/cpuset/foreground/cpus 0-3
     write /dev/cpuset/foreground/boost/cpus 0-3
-    write /dev/cpuset/background/cpus 0
-    write /dev/cpuset/system-background/cpus 0-1
+    write /dev/cpuset/background/cpus 0-1
+    write /dev/cpuset/system-background/cpus 0-3
     write /dev/cpuctl/cpu.shares 1024
 
     chown bluetooth bluetooth /sys/module/bluetooth_power/parameters/power
@@ -1288,10 +1272,10 @@ service sensorhubservice /system/bin/sensorhubservice
     user system
     group input
 
-#service thermal-engine /system/bin/thermal-engine
-#    class main
-#    user root
-#    group radio system
+service thermal-engine /system/vendor/bin/thermal-engine
+    class main
+    user root
+    group radio system
 
 service time_daemon /system/bin/time_daemon
     class main
@@ -1489,11 +1473,6 @@ on property:sys.boot_completed=1
     write /sys/devices/system/cpu/cpu2/online 1
     write /sys/devices/system/cpu/cpu3/online 1
 
-    for devfreq_gov in /sys/class/devfreq/qcom,cpubw*/governor
-    do
-        echo "cpubw_hwmon" > $devfreq_gov
-    done
-
     # Configure the cpu-boost module
     write /sys/module/cpu_boost/parameters/sync_threshold 1497600
     write /sys/module/cpu_boost/parameters/boost_ms 10
@@ -1580,14 +1559,6 @@ on property:sys.boot_completed=1
     write /sys/module/msm_hotplug/cpus_boosted 2
     write /sys/module/msm_hotplug/max_cpus_online 4
     write /sys/module/msm_hotplug/min_cpus_online 2
-
-    # Enable intelli-thermal for boot
-    write /sys/module/msm_thermal/parameters/enabled 1
-    write /sys/module/msm_thermal/core_control/enabled 1
-    write /sys/module/msm_thermal/parameters/core_control_mask 12
-    write /sys/module/msm_thermal/parameters/freq_control_mask 15
-    write /sys/module/msm_thermal/parameters/limit_temp_degC 80
-    write /sys/module/msm_thermal/parameters/core_limit_temp_degC 85
 
 service hostapd /system/bin/hostapd -dddd /data/hostapd/hostapd.conf
     class late_start

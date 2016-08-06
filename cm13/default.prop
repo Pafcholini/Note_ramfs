@@ -3,6 +3,7 @@
 #
 ro.adb.secure=1
 ro.secure=1
+security.perf_harden=1
 ro.allow.mock.location=0
 ro.debuggable=1
 ro.zygote=zygote32
@@ -16,7 +17,7 @@ sys.keymaster.loaded=true
 #
 # BOOTIMAGE_BUILD_PROPERTIES
 #
-ro.bootimage.build.date=mar jun 14 20:26:42 CEST 2016
-ro.bootimage.build.date.utc=1465928802
-ro.bootimage.build.fingerprint=samsung/emotion_trltexx/trltexx:6.0.1/MOB30M/556af7748d:userdebug/test-keys
+ro.bootimage.build.date=sáb ago 6 23:23:48 CEST 2016
+ro.bootimage.build.date.utc=1470518628
+ro.bootimage.build.fingerprint=samsung/emotion_trltexx/trltexx:6.0.1/MOB30Z/471632e272:userdebug/test-keys
 persist.sys.usb.config=none
