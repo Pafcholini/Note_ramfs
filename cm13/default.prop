@@ -17,7 +17,7 @@ sys.keymaster.loaded=true
 #
 # BOOTIMAGE_BUILD_PROPERTIES
 #
-ro.bootimage.build.date=sáb ago 6 23:23:48 CEST 2016
-ro.bootimage.build.date.utc=1470518628
-ro.bootimage.build.fingerprint=samsung/emotion_trltexx/trltexx:6.0.1/MOB30Z/471632e272:userdebug/test-keys
+ro.bootimage.build.date=mié ago 10 23:34:27 CEST 2016
+ro.bootimage.build.date.utc=1470864867
+ro.bootimage.build.fingerprint=samsung/emotion_trltexx/trltexx:6.0.1/MOB30Z/3b5759c559:userdebug/test-keys
 persist.sys.usb.config=none
