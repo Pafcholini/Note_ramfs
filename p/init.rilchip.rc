@@ -16,7 +16,7 @@ service ril-daemon /system/bin/rild
 service diag_uart_log /system/bin/diag_uart_log
     class main
     user root
-    group radio
+    group radio qcom_diag
 
 # QMUX must be in multiple groups to support external process connections
 service qmuxd /system/bin/qmuxd
@@ -45,8 +45,3 @@ service ril-daemon1 /system/bin/rild -c 2
     user root
     group radio cache inet misc audio log qcom_diag system drmrpc sdcard_r sdcard_rw diag
     disabled
-
-service atfwd /system/bin/ATFWD-daemon
-    class late_start
-    user system
-    group system radio

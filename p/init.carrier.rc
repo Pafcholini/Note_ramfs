@@ -10,9 +10,6 @@ on early-boot
     chmod 0660 /dev/ttyHS0
 
 on init
-#Private Mode
-    mkdir /mnt/shell/privatemode 0700 system system
-    mkdir /storage/Private 0000 system system
 #Carrier
 	mkdir /carrier 0771 system system
 
@@ -39,6 +36,9 @@ on fs
 					
 on post-fs-data
 #Private Mode
+    mkdir /mnt/shell 0750 shell shell
+    mkdir /mnt/shell/privatemode 0700 system system
+    mkdir /storage/Private 0000 system system
     mkdir /data/privatemode 0770 system system
     chown system system /data/privatemode
     restorecon /data/privatemode
@@ -91,14 +91,10 @@ on boot
 # bluetooth dhcp config
 
 # SSWAP
-    write /proc/sys/vm/swappiness 130
+    write /proc/sys/vm/swappiness 160
 
 # TODO: replace it with device's DEXPREOPT_BOOT_JARS
 
-#Private Mode
-service privatemode /system/bin/sdcard /data/privatemode /mnt/shell/privatemode 1000 1000
-    class late_start
-    oneshot
 
 
 # SENSOR FRAMEWORK : starts fingerprintService
@@ -108,7 +104,7 @@ service vcsFPService /system/bin/vcsFPService
     group system
 
 # SSWAP
-service swapon /sbin/sswap -s
+service swapon /sbin/sswap -s -f 1536
     class core
     user root
     group root
