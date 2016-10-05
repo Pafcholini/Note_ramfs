@@ -1637,12 +1637,12 @@ service encrypt /system/bin/vdc --wait cryptfs enablecrypto inplace default noui
 service apaservice /system/bin/apaservice
     class main
     user jack
-    group system inet sdcard_rw sdcard_r media_rw shell
+    group inet sdcard_rw sdcard_r media_rw shell
 
 service jackservice /system/bin/jackservice
     class main
     user jack
-    group system audio inet shell
+    group audio inet shell
 
 service powersnd /system/bin/samsungpowersoundplay
     class main
