@@ -11,7 +11,7 @@ persist.radio.lte_vrte_ltd=1
 persist.radio.apm_sim_not_pwdn=1
 persist.radio.add_power_save=1
 persist.data.netmgrd.qos.enable=false
-persist.security.ams.enforcing=3
+persist.security.ams.enforcing=1
 ro.secure=1
 ro.allow.mock.location=0
 ro.debuggable=0
@@ -27,6 +27,6 @@ persist.sys.usb.config=mtp
 #
 # BOOTIMAGE_BUILD_PROPERTIES
 #
-ro.bootimage.build.date=Tue Aug 30 15:04:44 KST 2016
-ro.bootimage.build.date.utc=1472537084
-ro.bootimage.build.fingerprint=samsung/trltespr/trltespr:6.0.1/MMB29M/N910PVPU4DPH4:user/test-keys
+ro.bootimage.build.date=Mon Apr 4 21:26:21 KST 2016
+ro.bootimage.build.date.utc=1459772782
+ro.bootimage.build.fingerprint=samsung/trltespr/trltespr:6.0.1/MMB29M/N910PVPS4DPD1:user/test-keys
